@@ -1,14 +1,11 @@
 name: Weekly Shrinkflation Scraper
-
 on:
   schedule:
     - cron: '0 3 * * 0'
   workflow_dispatch:
 
-# --- Permissions fix for Exit code 128 ---
 permissions:
   contents: write
-# -----------------------------------------
 
 concurrency:
   group: scraper-workflow
@@ -17,40 +14,36 @@ concurrency:
 jobs:
   scrape-data:
     runs-on: ubuntu-latest
-
     steps:
-      # Step A: Checkout repository 
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Step B: Set up Python 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # Step C: Install dependencies
       - name: Install dependencies
-        run: |
-          pip install requests pandas beautifulsoup4
+        run: pip install requests pandas beautifulsoup4
 
-      # Step D: Run scraper
       - name: Run Scraper Script
         run: python script.py
 
-      # Step E: Pull latest changes from remote
-      - name: Pull Latest Changes
+      - name: Commit and push with retry
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
 
-      # Step F: Commit and push changes
-      - name: Commit and Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Automated data update"
-          skip_fetch: true
-          skip_checkout: true
+          git add -A
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Automated data update"
+
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin main && echo "Push succeeded" && exit 0
+            echo "Attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
+
+          echo "All push attempts failed" && exit 1
