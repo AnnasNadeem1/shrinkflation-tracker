@@ -1,38 +1,40 @@
 name: Weekly Shrinkflation Scraper
 
-# 1. The Trigger: When should this run?
 on:
   schedule:
-    # This runs at 3:00 AM every Sunday
     - cron: '0 3 * * 0'
-  workflow_dispatch: # This allows you to click a button to run it manually
+  workflow_dispatch:
 
-# 2. The Job: What should the cloud computer do?
+# --- Permissions fix for Exit code 128 ---
+permissions:
+  contents: write
+# -----------------------------------------
+
 jobs:
   scrape-data:
-    runs-on: ubuntu-latest # Gives you a free Linux server
+    runs-on: ubuntu-latest
 
     steps:
-      # Step A: Get your code
+      # Step A: Checkout repository (updated to v4)
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step B: Install Python
+      # Step B: Set up Python (updated to v5)
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # Step C: Install the libraries your script needs
+      # Step C: Install dependencies
       - name: Install dependencies
         run: |
           pip install requests pandas beautifulsoup4
 
-      # Step D: Run your scraper
+      # Step D: Run scraper
       - name: Run Scraper Script
         run: python script.py
 
-      # Step E: Save the new data back to your repository
+      # Step E: Commit and push changes
       - name: Commit and Push Changes
         run: |
           git config --global user.name "GitHub Actions Bot"
