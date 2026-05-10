@@ -19,11 +19,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step A: Checkout repository (updated to v4)
+      # Step A: Checkout repository 
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step B: Set up Python (updated to v5)
+      # Step B: Set up Python 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -38,12 +38,8 @@ jobs:
       - name: Run Scraper Script
         run: python script.py
 
-      # Step E: Commit and push changes
+      # Step E: Commit and push changes the safe way
       - name: Commit and Push Changes
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Automated data update" || exit 0
-          git pull --rebase origin main
-          git push --force-with-lease origin main
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Automated data update"
