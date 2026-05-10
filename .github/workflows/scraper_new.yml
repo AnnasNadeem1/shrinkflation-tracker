@@ -39,10 +39,9 @@ jobs:
           git commit -m "Automated data update"
           for i in 1 2 3 4 5; do
             echo "Attempt $i..."
-            git fetch origin main
-            git reset HEAD
-            git rebase origin/main
+            git pull --no-rebase --no-edit origin main
             git push origin main && echo "Done!" && exit 0
+            echo "Failed, retrying in 5s..."
             sleep 5
           done
           exit 1
