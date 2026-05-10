@@ -27,7 +27,7 @@ jobs:
 
       - run: python script.py
 
-      - name: Commit and push with retry
+     - name: Commit and push with retry
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -36,11 +36,11 @@ jobs:
             echo "No changes, skipping."
             exit 0
           fi
+          git commit -m "Automated data update"
           for i in 1 2 3 4 5; do
             echo "Attempt $i..."
             git fetch origin main
             git rebase origin/main
-            git commit -m "Automated data update" || true
             git push origin main && echo "Done!" && exit 0
             sleep 5
           done
