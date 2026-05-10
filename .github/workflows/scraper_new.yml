@@ -40,7 +40,9 @@ jobs:
           for i in 1 2 3 4 5; do
             echo "Attempt $i..."
             git fetch origin main
+            git stash
             git rebase origin/main
+            git stash pop
             git push origin main && echo "Done!" && exit 0
             sleep 5
           done
