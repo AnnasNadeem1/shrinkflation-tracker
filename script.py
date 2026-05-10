@@ -51,4 +51,6 @@ if response.status_code == 200:
     # We'll show the top 10 items so you can see the results
     print(df[['Product Name', 'Price (PKR)', 'Weight', 'Unit', 'Weight_Grams', 'Price_Per_Gram']].head(10))
 
-    df.to_csv('greenvalley_snacks_may_2026.csv', index=False)
+    from datetime import date
+    filename = f"greenvalley_snacks_{date.today()}.csv"
+    df.to_csv(filename, index=False)
