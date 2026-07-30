@@ -84,6 +84,5 @@ This will likely mean moving from flat CSVs to a proper time-series-friendly sto
 - Build out the inflation-correlation and forecasting analysis described above
 - Expand beyond the snacks category
 
-## License
 
-Add a license of your choice (e.g. MIT) if you plan to make this public.
+
